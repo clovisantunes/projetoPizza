@@ -4,9 +4,28 @@ import styles from '../../../styles/Home.module.scss';
 import Image from 'next/image';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/Button/Index';
+import { FormEvent, useState } from 'react';
 
 import Link from 'next/link';
+import { Value } from 'sass';
 export default function SignUp() {
+
+  const [ name, setName] = useState('');
+  const [ email, setEmail] = useState('');
+  const [ passowrd, setPassword] = useState('');
+
+  const [ loading, setLoading] = useState(false);
+
+ async function handleSignUp(event: FormEvent){
+  event.preventDefault();
+
+  if (name =='' || email == '' || passowrd == ''){
+    alert('Preencha todos os campos!!!')
+    return;
+  }
+  setLoading(true);
+
+ }
 
   return (
    <>
@@ -20,23 +39,32 @@ export default function SignUp() {
 
       <div className={styles.login}>
         <h1>Criando sua conta</h1>
-        <form>
+        <form onSubmit={handleSignUp}>
           <Input
           placeholder='Digite seu nome'
           type='text'
+          value={name}
+          onChange={(e) => setName(e.target.value)
+          }
           />
           <Input
           placeholder='Digite seu email'
           type='text'
+          value={email}
+          onChange={(e) => setEmail(e.target.value)
+          }
           />
           <Input
           placeholder='Digite sua senha'
           type='password'
+          value={passowrd}
+          onChange={(e) => setPassword(e.target.value)
+          }
           />
 
           <Button
           type="submit"
-          loading={false}
+          loading={loading}
           >
             Cadastrar
           </Button>
