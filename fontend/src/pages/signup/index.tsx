@@ -4,27 +4,35 @@ import styles from '../../../styles/Home.module.scss';
 import Image from 'next/image';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/Button/Index';
-import { FormEvent, useState } from 'react';
-
+import { FormEvent, useState, useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
 import Link from 'next/link';
 import { Value } from 'sass';
 export default function SignUp() {
+  const {signUp} = useContext(AuthContext);
 
   const [ name, setName] = useState('');
   const [ email, setEmail] = useState('');
-  const [ passowrd, setPassword] = useState('');
+  const [ password, setPassword] = useState('');
 
   const [ loading, setLoading] = useState(false);
 
  async function handleSignUp(event: FormEvent){
   event.preventDefault();
 
-  if (name =='' || email == '' || passowrd == ''){
+  if (name =='' || email == '' || password == ''){
     alert('Preencha todos os campos!!!')
     return;
   }
   setLoading(true);
+  let data = {
+    name,
+    email,
+    password
+  }
 
+  await signUp(data)
+  setLoading(false);
  }
 
   return (
@@ -57,7 +65,7 @@ export default function SignUp() {
           <Input
           placeholder='Digite sua senha'
           type='password'
-          value={passowrd}
+          value={password}
           onChange={(e) => setPassword(e.target.value)
           }
           />
