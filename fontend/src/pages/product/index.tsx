@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { ChangeEvent } from "react";
 import Head from "next/head";
 import style from "./styles.module.scss";
@@ -7,10 +7,29 @@ import { Header } from "../../components/Header";
 import { Button } from "../../components/ui/Button/Index";
 import { Input } from "../../components/ui/input";
 import { FiUpload } from "react-icons/fi";
+import { setupAPIClient } from '../../services/api';
+import { toast } from "react-toastify";
 
-export default function Product() {
+type itemProps = {
+  id:string,
+  name:string;
+}
+
+interface CategoryProps{
+  categoryList: itemProps[];
+}
+
+export default function Product({ categoryList}: CategoryProps) {
+
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+  const [description, setDescription] = useState('');
+
   const [avatarUrl, setAvatarUrl] = useState("");
   const [imageAvatar, setImageAvatar] = useState(null);
+
+  const [categories, setCategories] = useState(categoryList || []);
+  const [categorySelected, setCategorySelected] =useState(0)
 
   function handleFile(e: ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) {
@@ -29,6 +48,44 @@ export default function Product() {
     }
   }
 
+function handleSelected(event){
+  setCategorySelected(event.target.value)
+}
+
+
+async function handleRegister(event: FormEvent){
+  event.preventDefault();
+
+  try{
+    const data = new FormData();
+
+    if(name === '' || price === '' || description === ''|| imageAvatar === null){
+      toast.error("Preencha todos os campos");
+      return;
+    }
+
+    data.append('name', name);
+    data.append('price', price);
+    data.append('description', description);
+    data.append('category_id', categories[categorySelected].id);
+    data.append('file', imageAvatar)
+
+
+    const apiClient = setupAPIClient();
+    await apiClient.post('/product', data)
+    toast.success('Cadastrado com sucesso')
+
+
+  }catch(err){
+    toast.error("Erro de cadastro")
+  }
+  setName('');
+  setPrice('');
+  setDescription('');
+  setImageAvatar('');
+  setAvatarUrl('');
+}
+
   return (
     <>
       <Head>
@@ -38,7 +95,7 @@ export default function Product() {
           <Header />
           <main className={style.container}>
             <h1>Novo produto</h1>
-            <form className={style.form}>
+            <form className={style.form} onSubmit={handleRegister}>
               <label className={style.labelAvatar}>
                 <span>
                   <FiUpload size={30} color="#FFF" />
@@ -61,13 +118,33 @@ export default function Product() {
                 )}
               </label>
 
-              <select>
-                <option>Bebida</option>
-                <option>Pizzas</option>
+              <select value={categorySelected} onChange={handleSelected}>
+               {categories.map((item, index) => {
+                return(
+                  <option key={item.id} value={index}>
+                    {item.name}
+                  </option>
+                )
+               })}
+      
               </select>
-              <Input type="text" placeholder="Digite o nome do produto" />
-              <Input type="text" placeholder="Preço do produto" />
-              <textarea placeholder="Descreva o produto" />
+              <Input 
+              type="text" 
+              placeholder="Digite o nome do produto" 
+              value={name}
+              onChange={(e) =>setName(e.target.value) }
+              />
+              <Input 
+              type="text" 
+              placeholder="Preço do produto" 
+              value={price}
+              onChange={(e) =>setPrice(e.target.value) }
+              />
+              <textarea placeholder="Descreva o produto" 
+              value={description}
+              onChange={(e) =>setDescription(e.target.value)}
+              
+              />
               <Button className={style.buttonAdd}>Cadastrar</Button>
             </form>
           </main>
@@ -78,7 +155,14 @@ export default function Product() {
 }
 
 export const getServerSideProps = canSSRAuth(async (ctx) => {
+    const apiClient = setupAPIClient(ctx);
+    const response = await apiClient.get('/category');
+
+    //console.log(response.data)
+
   return {
-    props: {},
+    props: {
+      categoryList: response.data
+    },
   };
 });

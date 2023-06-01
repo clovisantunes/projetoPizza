@@ -18,7 +18,7 @@ export function Header(){
                 <Link legacyBehavior  href="/category">
                         <a>Categoria</a>
                     </Link>
-                    <Link legacyBehavior  href="/products">
+                    <Link legacyBehavior  href="/product">
                         <a>Cardapio</a>
                     </Link>
                     <button onClick={signOut}>
