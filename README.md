@@ -4,8 +4,8 @@
 
 | Result |
 | ------ |
-| <img src="https://uploaddeimagens.com.br/images/004/492/775/full/Sem_t%C3%ADtulo.pngdsadsa.png?1685731388" width="400"> |
-| <img src="https://uploaddeimagens.com.br/images/004/492/775/full/Sem_t%C3%ADtulo.pngdsadsa.png?1685731388" width="400"> |
+| <img src="https://uploaddeimagens.com.br/images/004/492/775/full/Sem_t%C3%ADtulo.pngdsadsa.png?1685731388" width="300"> |
+| <img src="https://uploaddeimagens.com.br/images/004/492/775/full/Sem_t%C3%ADtulo.pngdsadsa.png?1685731388" width="300"> |
 
 
 
